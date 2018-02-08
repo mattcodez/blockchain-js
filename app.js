@@ -55,6 +55,23 @@ class Blockchain {
     return hash.digest('hex');
   }
   
+  proof_of_work(last_proof) {
+    let proof = 0
+    while (!this.valid_proof(last_proof, proof)) {
+        proof += 1
+    }
+
+    return proof;
+  }
+  
+  static valid_proof(last_proof, proof) {
+    const guess = `${last_proof}${proof}`;
+    const hash = crypto.createHash('sha256');
+    hash.update(guess);
+    const guess_hash = hashlib.sha256(guess).hexdigest();
+    return guess_hash.substr(-1, 4) === '0000';
+  }
+  
   get last_block() {
     return this.chain[this.chain.length - 1];
   }
